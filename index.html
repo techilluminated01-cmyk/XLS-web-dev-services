@@ -1,937 +1,1541 @@
-<!doctype html>
+<!--
+  index.html — XMS AI Services — Single File Ultra-Premium Agency Landing Page
+  Top-of-file notes:
+    - Change Formspree endpoint: modify FORM_ENDPOINT constant in the <script> block or change the form action attribute (currently: https://formspree.io/f/xkgprdpn).
+    - Palette variables: edit CSS :root variables under the "PALETTE" comment section.
+    - Headline / brand text: edit <h1 class="brand"> inside the hero glass panel.
+    - Testimonials: update the <template id="testimonial-template"> and the .testimonials .track markup in the Testimonials section.
+    - To disable cursor trail or other non-essential JS, see the "Features toggles" object in the JS (below).
+  Accessibility & performance notes:
+    - Fonts loaded via Google Fonts with font-display=swap for performance.
+    - Animations respect prefers-reduced-motion via media queries and JS checks.
+    - Images below the fold should be added with loading="lazy".
+    - All interactive elements have keyboard focus styles and ARIA attributes.
+  Author: Generated to user's spec. Do not remove form id/contact behavior.
+-->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>XMS AI Services — Premium AI Web & Content Studio</title>
-  <meta name="description" content="XMS AI Services — conversion-first AI websites, content, and automations. Fast, premium, boutique studio." />
-  <meta name="theme-color" content="#0D0D0D" />
+  <meta name="theme-color" content="#0B0F1A" />
+  <title>XMS AI Services — Premium AI Product & Agency</title>
 
-  <!-- Fonts: Poppins (headings) & Inter (body) -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;800;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- Basic meta Open Graph -->
-  <meta property="og:title" content="XMS AI Services — Premium AI websites in 24-48 hours" />
-  <meta property="og:description" content="AI-powered websites, automations and content — human-polished, conversion-first." />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1526378721699-8f8f6a3a7f1a?q=80&w=1200&auto=format&fit=crop&s=" />
+  <!-- Basic meta for SEO placeholder -->
+  <meta name="description" content="XMS AI Services — strategic AI products, bespoke models, and enterprise-grade integration." />
 
-  <!-- Styles: large, detailed, production-ready -->
   <style>
-    /* ======================================================================
-       XMS AI Services — Single-file stylesheet
-       - Theme variables (two schemes: dark and light)
-       - Responsive utility and layout rules
-       - Motion system with respects to prefers-reduced-motion
-       - Button animated gradient border, hover micro-interactions
-       - Cards, forms, hero, testimonials, accessibility
-       ====================================================================== */
+    /*
+      XMS AI Services — All CSS in one place.
+      Edit palette variables under :root -> PALETTE to change theme colors.
+      Keep animation timings in variables for easy tweaks.
+    */
 
+    /* ============================
+       PALETTE & THEME VARIABLES
+       ============================ */
     :root{
-      /* Core typography & sizing */
-      --max-width:1200px;
-      --base-gap:24px;
-      --radius:14px;
-      --ease: cubic-bezier(.22,.9,.32,1);
+      /* Dark Tech palette */
+      --dark-bg: #0B0F1A;
+      --neon-blue: #1E90FF;
+      --electric-violet: #9B5DE5;
+      --cyan-shimmer: #00F2FE;
+      --near-white: #F7F9FC;
 
-      /* Palette A (dark) */
-      --dark-bg: #0D0D0D;
-      --dark-surface: #111217;
-      --neon-blue: #007BFF;
-      --muted-blue: rgba(0,123,255,0.08);
+      /* Light Luxe palette */
+      --linen: #FCF8F3;
+      --warm-gold: #FFB86B;
+      --muted-navy: #0F1724;
 
-      /* Palette B (light) */
-      --light-bg: #FFFFFF;
-      --light-surface: #F6F8FA;
-      --silver-text: #6b7280;
-      --light-cta: #DDF3FF;
+      /* Typography scale */
+      --h1-size: clamp(36px, 6.4vw, 64px);
+      --lead-size: 18px;
 
-      /* Text */
-      --text-dark: #111214; /* used on light backgrounds */
-      --text-light: #F5F7FA; /* used on dark backgrounds */
+      /* Animation & easing */
+      --global-ease: cubic-bezier(.22,.9,.32,1);
+      --hero-loop: 26s; /* between 20-30s as requested */
+      --shape-loop-long: 22s;
+      --shape-ping: 8s;
+      --card-reveal: 900ms;
+      --card-stagger: 120ms;
 
-      /* Shadows */
-      --glow: 0 10px 30px rgba(0,123,255,0.12);
-      --card-shadow: 0 18px 50px rgba(2,6,23,0.12);
+      /* layout */
+      --container-max: 1200px;
+      --glass-bg-dark: rgba(255,255,255,0.03);
+      --glass-border: rgba(255,255,255,0.06);
+      --glass-blur: 8px;
 
-      /* Motion durations */
-      --dur-micro: 160ms;
-      --dur-common: 320ms;
-      --dur-slow: 1200ms;
+      /* accessibility */
+      --focus-ring: 3px solid rgba(30,144,255,0.18);
     }
 
-    /* Reset & base */
+    /* Respects reduced motion preference by overriding durations */
+    @media (prefers-reduced-motion: reduce){
+      :root{
+        --hero-loop: 0s;
+        --shape-loop-long: 0s;
+        --shape-ping: 0s;
+        --card-reveal: 0ms;
+      }
+    }
+
+    /* ============================
+       Global styles & reset (minimal)
+       ============================ */
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      line-height:1.45;
+      color:var(--near-white);
+      background: var(--dark-bg);
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-      background: var(--light-bg);
-      color: var(--text-dark);
+      line-height:1.6;
       -webkit-tap-highlight-color: transparent;
-      overflow-x:hidden;
     }
-    img{display:block;max-width:100%;height:auto}
-    a{color:inherit;text-decoration:none}
 
-    /* Page container */
-    .wrap{max-width:var(--max-width);margin:0 auto;padding:32px 20px}
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
 
-    /* ===========================
-       Header / Navigation
-       =========================== */
-    header.site-header{
-      position:fixed;
-      inset:0 0 auto 0;
-      top:18px;
-      z-index:120;
+    /* container utilities */
+    .container{
+      width:100%;
+      max-width:var(--container-max);
+      margin:0 auto;
+      padding:0 20px;
+    }
+
+    /* 12-column grid utility (simple) */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:20px;
+      align-items:start;
+    }
+
+    /* responsive collapse */
+    @media (max-width:900px){
+      .grid{grid-template-columns: repeat(6, 1fr)}
+    }
+    @media (max-width:640px){
+      .grid{grid-template-columns: repeat(4, 1fr)}
+    }
+
+    /* ============================
+       Header — sticky glass
+       ============================ */
+    header{
+      position:sticky;
+      top:0;
+      z-index:60;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: all 260ms var(--global-ease);
+      border-bottom: 1px solid transparent;
+    }
+    header.shrink{
+      padding:10px 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-bottom-color: rgba(255,255,255,0.04);
+      box-shadow: 0 6px 20px rgba(2,6,23,0.45);
+    }
+    .header-inner{
       display:flex;
-      justify-content:center;
-      pointer-events:none; /* allow inner container to manage pointer events */
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 20px;
+      max-width:var(--container-max);
+      margin:0 auto;
     }
-    .nav{
-      pointer-events:all;
-      width:calc(var(--max-width) + 40px);
-      max-width:100%;
-      margin:0 20px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-family:"Poppins", system-ui, sans-serif;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      color:var(--near-white);
+      font-size:20px;
+    }
+    .logo-mark{
+      width:44px;
+      height:44px;
+      border-radius:10px;
+      background: linear-gradient(135deg, var(--electric-violet), var(--neon-blue));
+      display:inline-grid;
+      place-items:center;
+      color:var(--linen);
+      box-shadow: 0 6px 20px rgba(30,144,255,0.08), inset 0 -6px 18px rgba(0,0,0,0.12);
+      font-weight:700;
+      font-size:14px;
+    }
+    nav[aria-label="primary"]{
+      display:flex;
+      gap:18px;
+      align-items:center;
+    }
+    nav a{
+      color:rgba(247,249,252,0.9);
+      font-weight:500;
+      font-size:15px;
+      padding:8px 6px;
+      border-radius:6px;
+      position:relative;
+      outline: none;
+    }
+    nav a:focus{
+      box-shadow: var(--focus-ring);
+    }
+    /* underline slide effect */
+    nav a::after{
+      content:"";
+      position:absolute;
+      left:8px;
+      right:8px;
+      bottom:6px;
+      height:2px;
+      background:linear-gradient(90deg,var(--neon-blue),var(--electric-violet));
+      transform:scaleX(0);
+      transform-origin:left;
+      transition: transform 150ms var(--global-ease);
+    }
+    nav a:hover::after,
+    nav a:focus::after{ transform: scaleX(1); }
+
+    .cta-strong{
+      background: linear-gradient(90deg,var(--neon-blue),var(--electric-violet));
+      padding:10px 16px;
+      border-radius:10px;
+      color:var(--linen);
+      font-weight:700;
+      cursor:pointer;
+      border: none;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      transition: transform 180ms var(--global-ease), box-shadow 180ms var(--global-ease);
+      box-shadow: 0 8px 30px rgba(155,93,229,0.12);
+    }
+    .cta-strong:focus{ box-shadow: var(--focus-ring); outline:none; }
+    .cta-strong:hover{ transform: translateY(-3px) scale(1.02); }
+
+    /* mobile nav collapse */
+    @media (max-width:880px){
+      nav[aria-label="primary"]{ display:none }
+    }
+
+    /* ============================
+       Hero — full viewport
+       ============================ */
+    .hero{
+      position:relative;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      padding:40px 0;
+    }
+
+    /* morphing gradient background + noise overlay */
+    .hero-bg{
+      position:absolute;
+      inset:0;
+      z-index:0;
+      background: linear-gradient(120deg, rgba(155,93,229,0.14) 0%, rgba(30,144,255,0.12) 45%, rgba(252,248,243,0.08) 100%);
+      transition: background 200ms linear;
+      will-change: background;
+      animation: gradientMorph var(--hero-loop) linear infinite;
+      mix-blend-mode: normal;
+      opacity:1;
+    }
+    /* subtle CSS noise texture using radial-gradient repetitions */
+    .hero-bg::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image: radial-gradient(rgba(255,255,255,0.01) 1px, transparent 1px);
+      background-size: 4px 4px;
+      opacity:0.6;
+      pointer-events:none;
+    }
+    @keyframes gradientMorph{
+      0%{ background: linear-gradient(120deg, rgba(155,93,229,0.15) 0%, rgba(30,144,255,0.12) 45%, rgba(252,248,243,0.06) 100%); }
+      33%{ background: linear-gradient(120deg, rgba(30,144,255,0.15) 0%, rgba(0,242,254,0.10) 45%, rgba(252,248,243,0.06) 100%); }
+      66%{ background: linear-gradient(120deg, rgba(252,248,243,0.95) 0%, rgba(255,184,107,0.06) 45%, rgba(155,93,229,0.06) 100%); }
+      100%{ background: linear-gradient(120deg, rgba(155,93,229,0.15) 0%, rgba(30,144,255,0.12) 45%, rgba(252,248,243,0.06) 100%); }
+    }
+
+    /* 3D/translucent squares container */
+    .hero-shapes{
+      position:absolute;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      perspective:1000px; /* container perspective */
+    }
+    .shape{
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+      /* glass look */
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      box-shadow: 0 10px 30px rgba(2,6,23,0.4);
+      border-radius:12px;
+      opacity:0.9;
+    }
+
+    /* Individual shape variants */
+    .shape.s1{ width:180px; height:180px; margin:-90px 0 0 -90px; animation: shapeMove1 var(--shape-loop-long) linear infinite; z-index:2; }
+    .shape.s2{ width:240px; height:240px; margin:-120px 0 0 -120px; animation: shapeMove2 calc(var(--shape-loop-long) * 1.2) linear infinite; z-index:3; opacity:0.85; }
+    .shape.s3{ width:120px; height:120px; margin:-60px 0 0 -60px; animation: shapeMove3 calc(var(--shape-loop-long) * 0.9) linear infinite; z-index:4; opacity:0.92; }
+    .shape.s4{ width:320px; height:200px; margin:-100px 0 0 -160px; animation: shapeMove4 calc(var(--shape-loop-long) * 1.4) linear infinite; z-index:1; opacity:0.8; }
+    .shape.s5{ width:90px; height:90px; margin:-45px 0 0 -45px; animation: shapeMove5 calc(var(--shape-loop-long) * 0.7) linear infinite; z-index:5; opacity:0.95; }
+    .shape.s6{ width:420px; height:160px; margin:-80px 0 0 -210px; animation: shapeMove6 calc(var(--shape-loop-long) * 1.6) linear infinite; z-index:0; opacity:0.7; }
+
+    /* Each keyframe does subtle translate + rotate + scale for organic motion */
+    @keyframes shapeMove1{
+      0%{ transform: translate3d(-20vw, -10vh, 0) rotateX(6deg) rotateY(-4deg) rotate(0deg) scale(1); }
+      50%{ transform: translate3d(-10vw, -18vh, 20px) rotateX(8deg) rotateY(6deg) rotate(12deg) scale(1.02); }
+      100%{ transform: translate3d(-20vw, -10vh, 0) rotateX(6deg) rotateY(-4deg) rotate(0deg) scale(1); }
+    }
+    @keyframes shapeMove2{
+      0%{ transform: translate3d(18vw, -6vh, -30px) rotateX(-4deg) rotateY(10deg) rotate(0deg) scale(1); }
+      50%{ transform: translate3d(14vw, -16vh, 10px) rotateX(-8deg) rotateY(6deg) rotate(-8deg) scale(1.01); }
+      100%{ transform: translate3d(18vw, -6vh, -30px) rotateX(-4deg) rotateY(10deg) rotate(0deg) scale(1); }
+    }
+    @keyframes shapeMove3{
+      0%{ transform: translate3d(-6vw, 18vh, 0) rotateX(10deg) rotateY(4deg) rotate(0deg) scale(1); }
+      50%{ transform: translate3d(-8vw, 14vh, 15px) rotateX(12deg) rotateY(-2deg) rotate(6deg) scale(1.02); }
+      100%{ transform: translate3d(-6vw, 18vh, 0) rotateX(10deg) rotateY(4deg) rotate(0deg) scale(1); }
+    }
+    @keyframes shapeMove4{
+      0%{ transform: translate3d(10vw, 12vh, -10px) rotateX(-6deg) rotateY(-4deg) rotate(0deg) scale(1); }
+      50%{ transform: translate3d(8vw, 8vh, 20px) rotateX(-10deg) rotateY(-6deg) rotate(-10deg) scale(1.01); }
+      100%{ transform: translate3d(10vw, 12vh, -10px) rotateX(-6deg) rotateY(-4deg) rotate(0deg) scale(1); }
+    }
+    @keyframes shapeMove5{
+      0%{ transform: translate3d(30vw, 20vh, 0) rotateX(0deg) rotateY(0deg) rotate(0deg) scale(1); }
+      50%{ transform: translate3d(28vw, 18vh, 10px) rotateX(4deg) rotateY(6deg) rotate(6deg) scale(1.03); }
+      100%{ transform: translate3d(30vw, 20vh, 0) rotateX(0deg) rotateY(0deg) rotate(0deg) scale(1); }
+    }
+    @keyframes shapeMove6{
+      0%{ transform: translate3d(-30vw, 6vh, -20px) rotateX(4deg) rotateY(8deg) rotate(0deg) scale(1); }
+      50%{ transform: translate3d(-34vw, 8vh, 20px) rotateX(8deg) rotateY(4deg) rotate(-6deg) scale(1.02); }
+      100%{ transform: translate3d(-30vw, 6vh, -20px) rotateX(4deg) rotateY(8deg) rotate(0deg) scale(1); }
+    }
+
+    /* subtle ping scale for organic twitch */
+    .shape::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      pointer-events:none;
+    }
+    /* Hover shimmer and RGB split using pseudo elements (applied on hover via JS pointer) */
+    .shape[data-pointer="true"]{
+      filter: drop-shadow(0 10px 30px rgba(30,144,255,0.06));
+      transform: translateZ(10px) scale(1.02);
+    }
+
+    /* ============================
+       Hero glass panel content
+       ============================ */
+    .hero-panel{
+      position:relative;
+      z-index:6;
+      width:min(900px, 94%);
+      margin:0 auto;
+      border-radius:16px;
+      padding:32px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display:flex;
+      gap:18px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.6);
+      opacity:0;
+      transform: translateY(18px);
+      animation: heroPanelIn 1200ms var(--global-ease) 500ms forwards;
+    }
+
+    @keyframes heroPanelIn{
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .hero-copy{
+      flex:1 1 480px;
+      min-width:260px;
+    }
+    .hero-copy h1{
+      margin:0 0 8px 0;
+      font-family:"Poppins", system-ui, sans-serif;
+      font-weight:900;
+      font-size:var(--h1-size);
+      color:var(--near-white);
+      letter-spacing:-0.02em;
+      line-height:1.02;
+    }
+    .hero-copy p.lead{
+      margin:0 0 18px 0;
+      color: rgba(247,249,252,0.92);
+      font-size:var(--lead-size);
+    }
+    .hero-ctas{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .btn-ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.08);
+      padding:10px 14px;
+      border-radius:10px;
+      color:var(--near-white);
+      cursor:pointer;
+      transition: transform 180ms var(--global-ease), box-shadow 180ms var(--global-ease);
+    }
+    .btn-ghost:focus{ outline:none; box-shadow: var(--focus-ring); }
+    .btn-ghost:hover{ transform: translateY(-2px); }
+
+    .hero-image{
+      width:320px;
+      height:200px;
+      border-radius:12px;
+      overflow:hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(15,17,36,0.02));
+      display:grid;
+      place-items:center;
+      position:relative;
+      border: 1px solid rgba(255,255,255,0.04);
+      transform-origin:center;
+      transition: transform 220ms var(--global-ease);
+    }
+    .hero-image .placeholder{
+      width:90%;
+      height:70%;
+      border-radius:8px;
+      background: linear-gradient(90deg, rgba(155,93,229,0.12), rgba(30,144,255,0.10));
+      display:grid;
+      place-items:center;
+      color: rgba(247,249,252,0.9);
+      font-weight:600;
+      font-family: "Roboto", "Inter", sans-serif;
+    }
+    .hero-image:hover{ transform: translateY(-6px) scale(1.02); }
+
+    /* ============================
+       Section reveal animation utility
+       ============================ */
+    .reveal{
+      opacity:0;
+      transform: translateY(18px);
+      transition: opacity var(--card-reveal) var(--global-ease), transform var(--card-reveal) var(--global-ease);
+      will-change: transform, opacity;
+    }
+    .reveal.show{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* ============================
+       Services grid (4 cards)
+       ============================ */
+    section.services{
+      padding:80px 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      color:var(--near-white);
+    }
+    .services-grid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:24px;
+      margin-top:28px;
+    }
+    @media (max-width:1000px){ .services-grid{ grid-template-columns: repeat(2,1fr) } }
+    @media (max-width:640px){ .services-grid{ grid-template-columns: repeat(1,1fr) } }
+
+    .service-card{
+      padding:20px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      transition: transform 220ms var(--global-ease), box-shadow 220ms var(--global-ease);
+      transform-origin:center;
+      transform-style:preserve-3d;
+      will-change: transform, box-shadow;
+    }
+    .service-card:hover{
+      transform: translateY(-10px) rotateX(3deg) rotateY(-3deg) scale(1.01);
+      box-shadow: 0 18px 50px rgba(30,144,255,0.06);
+    }
+    .service-card .icon{
+      width:56px;
+      height:56px;
+      border-radius:10px;
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      font-family:"Poppins",sans-serif;
+      margin-bottom:10px;
+      background: linear-gradient(135deg, rgba(155,93,229,0.14), rgba(30,144,255,0.10));
+      color:var(--near-white);
+    }
+    .service-card h3{ margin:6px 0 8px 0; font-size:18px; }
+    .service-card ul{ margin:0; padding-left:18px; opacity:0.92; font-size:14px; }
+
+    /* neon outline pulse while hovered (600ms loop via CSS animation) */
+    .service-card:hover::after{
+      content:"";
+      position:absolute;
+      inset:inherit;
+    }
+
+    /* ============================
+       Demos — hover shine & expand
+       ============================ */
+    section.demos{ padding:80px 0; background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0)); }
+    .demos-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:22px; }
+    @media (max-width:1000px){ .demos-grid{ grid-template-columns: repeat(1,1fr) } }
+    .demo-tile{
+      border-radius:12px;
+      overflow:hidden;
+      position:relative;
+      min-height:220px;
+      background: linear-gradient(135deg, rgba(155,93,229,0.08), rgba(30,144,255,0.06));
+      transition: transform 220ms var(--global-ease), box-shadow 220ms var(--global-ease);
+      border:1px solid rgba(255,255,255,0.04);
+    }
+    .demo-tile:hover{ transform: translateY(-8px) scale(1.01); box-shadow: 0 18px 50px rgba(0,0,0,0.4); }
+    .demo-media{ position:absolute; inset:0; display:grid; place-items:center; }
+    .demo-overlay{
+      position:absolute;
+      inset:auto 0 0 0;
+      height:64%;
+      background:linear-gradient(180deg, transparent, rgba(11,15,26,0.6));
+      transform: translateY(100%);
+      transition: transform 320ms var(--global-ease);
+      display:flex;
+      align-items:flex-end;
+      padding:16px;
+    }
+    .demo-tile:hover .demo-overlay{ transform: translateY(0); }
+    .shine{
+      position:absolute;
+      top:0; left:-120%;
+      width:40%;
+      height:100%;
+      transform:skewX(-20deg);
+      background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.18), rgba(255,255,255,0.06));
+      transition: left 420ms var(--global-ease);
+      pointer-events:none;
+    }
+    .demo-tile:hover .shine{ left:120%; transition: left 420ms var(--global-ease); }
+
+    /* ============================
+       Stats / Why XMS — counters
+       ============================ */
+    section.stats{
+      padding:72px 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:40px;
+      flex-wrap:wrap;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(15,17,36,0.02));
+    }
+    .stat{
+      min-width:180px;
+      text-align:center;
+      padding:18px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .stat .num{
+      font-family:"Poppins", sans-serif;
+      font-weight:800;
+      font-size:28px;
+      color:var(--near-white);
+    }
+    .stat p{ margin:8px 0 0 0; color:rgba(247,249,252,0.9); font-size:14px; }
+
+    /* ============================
+       Testimonials — carousel
+       ============================ */
+    .testimonials{
+      padding:72px 0;
+      background:linear-gradient(180deg, rgba(15,17,36,0.02), rgba(15,17,36,0.01));
+      position:relative;
+    }
+    .testimonials .viewport{
+      overflow:hidden;
+      position:relative;
+      border-radius:12px;
+      max-width:900px;
+      margin:0 auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .testimonials .track{
+      display:flex;
+      gap:20px;
+      padding:28px;
+      transition: transform 600ms var(--global-ease), opacity 600ms var(--global-ease);
+    }
+    .testimonial{
+      min-width:100%;
+      flex:0 0 100%;
+      display:flex;
+      gap:16px;
+      align-items:flex-start;
+    }
+    .testimonial .avatar{
+      width:68px;
+      height:68px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--neon-blue),var(--electric-violet));
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      color:var(--linen);
+      flex-shrink:0;
+    }
+    .testimonial .quote{
+      flex:1;
+    }
+    .test-controls{
+      display:flex;
+      gap:8px;
+      margin-top:12px;
+      justify-content:center;
+    }
+    .test-controls button{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      padding:8px 10px;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    .test-controls button:focus{ outline:none; box-shadow: var(--focus-ring); }
+
+    /* ============================
+       Pricing snippet
+       ============================ */
+    section.pricing{
+      padding:80px 0;
+    }
+    .pricing-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:20px;
+      margin-top:20px;
+    }
+    @media (max-width:900px){ .pricing-grid{ grid-template-columns: repeat(1,1fr) } }
+    .price-card{
+      padding:20px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+      border:1px solid rgba(255,255,255,0.03);
+      transition: transform 220ms var(--global-ease);
+    }
+    .price-card:hover{ transform: translateY(-8px); }
+
+    /* ============================
+       Contact form — exact Formspree handling
+       ============================ */
+    section.contact{
+      padding:72px 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(255,255,255,0.01));
+    }
+    .contact-wrap{
+      max-width:920px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:1fr 360px;
+      gap:24px;
+      align-items:start;
+    }
+    @media (max-width:980px){ .contact-wrap{ grid-template-columns:1fr } }
+
+    form#contactForm{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      padding:20px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+    }
+    .field{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+    }
+    .field input[type="text"],
+    .field input[type="email"]{
+      padding:12px 12px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.06);
+      background: transparent;
+      color:var(--near-white);
+      font-size:15px;
+      outline:none;
+    }
+    .field label{
+      font-size:13px;
+      margin-bottom:6px;
+      color: rgba(247,249,252,0.85);
+    }
+    .field input:focus{
+      box-shadow: 0 8px 30px rgba(30,144,255,0.06);
+      border-color: rgba(30,144,255,0.24);
+    }
+    .inline-row{ display:flex; gap:12px; align-items:center; }
+    .small{
+      font-size:13px;
+      color:rgba(247,249,252,0.8);
+    }
+
+    /* toast / modal / aria-live */
+    .toast{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      z-index:120;
+      padding:12px 16px;
+      border-radius:10px;
+      background: #3C1A1A;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      opacity:0;
+      transform: translateY(8px) scale(0.98);
+      transition: all 220ms var(--global-ease);
+    }
+    .toast.show{ opacity:1; transform: translateY(0) scale(1); }
+
+    .modal-inline{
+      position:fixed;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%) scale(0.92);
+      z-index:130;
+      padding:22px;
+      border-radius:12px;
+      width:min(520px, 94%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 30px 80px rgba(2,6,23,0.7);
+      opacity:0;
+      transition: all 480ms var(--global-ease);
+      display:none;
+    }
+    .modal-inline.show{
+      display:block;
+      opacity:1;
+      transform: translate(-50%,-50%) scale(1);
+    }
+    .modal-content{ display:flex; gap:16px; align-items:center; }
+    .checkmark{
+      width:68px;
+      height:68px;
+      display:grid;
+      place-items:center;
+      border-radius:999px;
+      background: linear-gradient(180deg,var(--neon-blue),var(--electric-violet));
+      color:var(--linen);
+      flex-shrink:0;
+    }
+
+    /* "What happens next" microcopy */
+    .micro{
+      font-size:13px;
+      color: rgba(247,249,252,0.82);
+      margin-top:8px;
+    }
+
+    /* Footer */
+    footer{
+      padding:20px;
+      border-top:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      padding:10px 16px;
-      border-radius:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.45));
-      box-shadow: 0 6px 30px rgba(5,10,20,0.06);
-      backdrop-filter: blur(8px);
+      color: rgba(247,249,252,0.7);
     }
 
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{
-      width:48px;height:48px;border-radius:10px;
-      display:grid;place-items:center;font-weight:800;font-family:"Poppins",sans-serif;
-      color:white;background:linear-gradient(135deg,var(--neon-blue),#6A4CFF);
-      box-shadow:var(--glow);
-    }
-    .brand .title{font-weight:800;font-family:"Poppins",sans-serif;color:var(--text-dark);font-size:15px}
-    nav.primary{display:flex;align-items:center;gap:18px}
-    nav.primary a{font-weight:600;color:var(--text-dark);opacity:0.92}
-    .nav-cta{
-      position:relative;
-      display:inline-block;
-      --pad-x:14px;
-      --pad-y:10px;
-      padding:var(--pad-y) var(--pad-x);
-      border-radius:12px;
-      font-weight:800;
-      font-family:"Poppins",sans-serif;
-      cursor:pointer;
-      color: white;
-      background: linear-gradient(90deg, var(--neon-blue), #6A4CFF);
-      box-shadow: var(--glow);
-      border: none;
-      transition: transform var(--dur-micro) var(--ease), box-shadow var(--dur-micro) var(--ease);
-    }
-    .nav-cta:active{transform:scale(.98)}
-    .nav-cta:focus{outline:3px solid rgba(0,123,255,0.18);outline-offset:3px}
+    /* focus styles for keyboard */
+    button:focus, a:focus, input:focus, textarea:focus{ outline: none; box-shadow: var(--focus-ring); border-radius:8px; }
 
-    /* Animated gradient border wrapper (used for CTAs repeated) */
-    .cta-wrap{
-      position:relative;display:inline-block;border-radius:14px;padding:2px;background:linear-gradient(90deg,var(--neon-blue),#6A4CFF); /* border gradient */
-    }
-    .cta-wrap .cta{
-      display:block;border-radius:12px;padding:10px 16px;background:var(--light-bg);color:var(--text-dark);font-weight:700;
-      transform:translateZ(0);
+    /* helper hidden */
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    /* responsive tweaks */
+    @media (max-width:640px){
+      .hero-copy h1{ font-size: clamp(28px, 9.2vw, 40px); }
+      .hero-panel{ padding:18px; }
+      .hero-image{ display:none; }
+      .header-inner{ padding:12px 14px; }
     }
 
-    /* ===========================
-       Hero - alternating dark section
-       =========================== */
-    .hero{
-      min-height:88vh;
-      display:flex;
-      align-items:center;
-      position:relative;
-      padding-top:30px;
-      padding-bottom:40px;
-    }
-
-    /* Dual scheme sections:
-       Dark section uses the dark palette and light text.
-       Light section uses the light palette and dark text. */
-    .section--dark{background:var(--dark-bg);color:var(--text-light)}
-    .section--light{background:var(--light-bg);color:var(--text-dark)}
-
-    /* Hero content grid */
-    .hero-grid{display:grid;grid-template-columns:1fr 480px;gap:36px;align-items:center;width:100%;max-width:var(--max-width);margin:0 auto;padding:48px 20px}
-    .hero-left h1{
-      margin:0;font-family:"Poppins",sans-serif;font-weight:900;font-size:48px;line-height:1.02;letter-spacing:1px;
-      text-transform:uppercase;
-    }
-    .hero-left p.lead{margin-top:14px;color:rgba(255,255,255,0.9);max-width:680px;font-size:17px}
-
-    /* CTA animated gradient border (neon look) */
-    .primary-btn{
-      position:relative;
-      display:inline-block;
-      margin-top:22px;
-      padding:12px 18px;
-      border-radius:12px;
-      font-weight:800;
-      font-family:"Poppins",sans-serif;
-      color:var(--text-light);
-      background:linear-gradient(90deg,var(--neon-blue),#6A4CFF);
-      box-shadow:0 10px 36px rgba(0,123,255,0.16);
-      border:none;
-      cursor:pointer;
-      transition: transform var(--dur-micro) var(--ease), box-shadow var(--dur-micro) var(--ease);
-      will-change:transform,box-shadow;
-    }
-    .primary-btn:hover{ transform:scale(1.05); box-shadow:0 18px 56px rgba(0,123,255,0.22) }
-    .secondary-ghost{
-      margin-left:12px;padding:11px 16px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.92);font-weight:700;
-      transition:transform var(--dur-micro) var(--ease),background var(--dur-micro) var(--ease);
-    }
-    .secondary-ghost:hover{ transform:translateY(-3px); background:rgba(255,255,255,0.02) }
-
-    /* Animated gradient border (advanced) using pseudo-element */
-    .glow-border{
-      position:relative;
-      border-radius:14px;
-      padding:2px;
-      --g: conic-gradient(from 200deg at 50% 50%, rgba(0,123,255,0.95), rgba(106,76,255,0.95), rgba(0,123,255,0.7));
-      background:var(--g);
-      animation: spinGradient 6s linear infinite;
-    }
-    .glow-border .btn-inner{
-      display:block;background:var(--dark-bg);border-radius:12px;padding:12px 18px;color:var(--text-light);
-    }
-    @keyframes spinGradient{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
-
-    /* Hero right card */
-    .hero-card{
-      background: linear-gradient(180deg, rgba(18,18,20,0.92), rgba(17,17,20,0.85));
-      border-radius:16px;padding:18px;color:var(--text-light);box-shadow:var(--card-shadow);backdrop-filter: blur(6px);
-      border:1px solid rgba(255,255,255,0.02);
-    }
-
-    /* Floating shapes (decorative) */
-    .float-shape{
-      position:absolute;pointer-events:none;border-radius:50%;filter:blur(24px);opacity:0.9;
-      mix-blend-mode:screen;
-    }
-    .float-a{width:360px;height:360px;left:-90px;top:10%;background:radial-gradient(circle at 30% 30%, rgba(0,123,255,0.95), rgba(106,76,255,0.28))}
-    .float-b{width:220px;height:220px;right:-60px;top:28%;background:radial-gradient(circle at 20% 40%, rgba(106,76,255,0.92), rgba(0,123,255,0.18))}
-
-    /* Hero background parallax image (dark) */
-    .hero-bg{
-      position:absolute;inset:0;z-index:-2;background-position:center;background-size:cover;transform-origin:center;will-change:transform;
-      opacity:0.22;filter:saturate(.92) brightness(.72);
-    }
-
-    /* ===========================
-       Section common & content style
-       =========================== */
-    section{padding:72px 20px}
-    .section-inner{max-width:var(--max-width);margin:0 auto;padding:0 20px}
-
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-
-    /* Card styles (services, portfolio) */
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03);
-      box-shadow:0 10px 30px rgba(2,6,23,0.06);
-      transition:transform var(--dur-common) var(--ease), box-shadow var(--dur-common) var(--ease), filter var(--dur-common) var(--ease);
-      will-change:transform;
-    }
-    /* Hover glow for dark cards (neon) */
-    .card--dark:hover{ transform:translateY(-10px); box-shadow: 0 30px 90px rgba(0,123,255,0.12); border-color:rgba(0,123,255,0.18) }
-    /* Hover for light cards (soft lift) */
-    .card--light{ background:var(--light-surface); border:1px solid rgba(2,6,23,0.04) }
-    .card--light:hover{ transform:translateY(-6px); box-shadow: 0 20px 60px rgba(2,6,23,0.06) }
-
-    .card h3{margin:8px 0 6px;font-family:"Poppins",sans-serif}
-    .card p{margin:0;color:var(--silver-text)}
-
-    /* Portfolio image */
-    .port-thumb{border-radius:10px;overflow:hidden;height:160px;background:#eee;display:block}
-
-    /* Testimonials carousel */
-    .testimonials{position:relative;margin-top:16px}
-    .testimonial{
-      min-height:120px;padding:14px;border-radius:12px;background:linear-gradient(180deg,#0f1724,#0b1220);color:var(--text-light);box-shadow:0 20px 60px rgba(2,6,23,0.5);
-      display:flex;gap:12px;align-items:flex-start;
-      opacity:0;transform:translateY(16px);transition:opacity var(--dur-common) var(--ease),transform var(--dur-common) var(--ease);
-    }
-    .testimonial.in-view{opacity:1;transform:none}
-    .avatar{width:56px;height:56px;border-radius:50%;overflow:hidden;flex:0 0 56px;border:2px solid rgba(255,255,255,0.06)}
-
-    /* Pricing cards */
-    .price-row{display:flex;gap:12px;align-items:stretch}
-    .price{padding:18px;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px solid rgba(2,6,23,0.04);text-align:center}
-
-    /* Contact form */
-    .contact-panel{max-width:720px;margin:0 auto;border-radius:14px;padding:20px;background:linear-gradient(180deg,#fff,#fcfdff);box-shadow:var(--card-shadow);border:1px solid rgba(2,6,23,0.04)}
-    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .field{display:flex;flex-direction:column;gap:6px}
-    .label{font-weight:700;font-family:"Poppins",sans-serif;font-size:13px}
-    .input{
-      border-radius:10px;padding:12px;border:1px solid rgba(2,6,23,0.06);font-size:15px;background:transparent;outline:none;
-      transition:box-shadow var(--dur-micro) var(--ease),border-color var(--dur-micro) var(--ease);
-    }
-    .input:focus{box-shadow:0 8px 24px rgba(0,123,255,0.08);border-color:rgba(0,123,255,0.28)}
-    .submit{
-      margin-top:12px;padding:12px 18px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--neon-blue),#6A4CFF);color:white;font-weight:800;cursor:pointer;
-      transition:transform var(--dur-micro) var(--ease),box-shadow var(--dur-micro) var(--ease);
-    }
-    .submit:hover{transform:scale(1.03);box-shadow:0 18px 48px rgba(0,123,255,0.16)}
-    .note{font-size:13px;color:var(--silver-text);margin-top:10px}
-
-    /* Success modal (inline, centered) */
-    .modal-success{
-      position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.98);min-width:320px;max-width:520px;padding:18px;border-radius:12px;background:linear-gradient(180deg,#0B1220,#0D1424);color:var(--text-light);box-shadow:0 30px 90px rgba(2,6,23,0.6);z-index:140;opacity:0;pointer-events:none;transition:opacity 280ms var(--ease),transform 280ms var(--ease)
-    }
-    .modal-success.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:all}
-
-    /* Success checkmark */
-    .checkmark{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(90deg,var(--neon-blue),#6A4CFF);box-shadow:0 12px 36px rgba(0,123,255,0.18);margin-right:12px}
-
-    /* Toast / error */
-    .toast{
-      position:fixed;right:18px;top:18px;padding:12px 16px;border-radius:10px;background:#B00020;color:#fff;box-shadow:0 10px 30px rgba(176,0,32,0.2);z-index:150;opacity:0;transform:translateY(-8px);transition:opacity 240ms var(--ease),transform 240ms var(--ease)
-    }
-    .toast.show{opacity:1;transform:none}
-
-    /* Footer */
-    footer.site-footer{padding:30px 20px;background:linear-gradient(180deg,#fff,#fbfdff);border-top:1px solid rgba(2,6,23,0.04);margin-top:40px}
-    .footer-inner{max-width:var(--max-width);margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:0 20px;gap:12px}
-
-    /* Responsive */
-    @media (max-width:1024px){
-      .hero-grid{grid-template-columns:1fr 360px}
-      .grid-3{grid-template-columns:repeat(2,1fr)}
-    }
-    @media (max-width:720px){
-      .nav{padding:10px}
-      nav.primary{display:none}
-      .hero-grid{grid-template-columns:1fr;gap:20px;padding:28px 18px}
-      .hero-left h1{font-size:28px}
-      .grid-3{grid-template-columns:1fr}
-      .grid-2{grid-template-columns:1fr}
-      .form-row{grid-template-columns:1fr}
-      .hero-card{display:none}
-    }
-
-    /* Reduced motion */
-    @media (prefers-reduced-motion: reduce){
-      *{transition:none!important;animation:none!important}
-    }
-
-    /* small utility classes */
-    .muted{color:var(--silver-text)}
-    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
   </style>
 </head>
 <body>
+  <!-- Skip link for accessibility -->
+  <a href="#main" class="sr-only">Skip to main content</a>
 
-  <!-- =========================
-       Header/Nav
-       ========================= -->
-  <header class="site-header" role="banner" aria-label="Main header">
-    <div class="nav" role="navigation" aria-label="Primary navigation">
-      <div class="brand" aria-hidden="false">
-        <div class="logo" aria-hidden="true">X</div>
+  <!-- Header -->
+  <header id="siteHeader" aria-hidden="false">
+    <div class="header-inner container" role="banner">
+      <div class="brand" aria-label="XMS AI Services home">
+        <div class="logo-mark" aria-hidden="true">XMS</div>
         <div>
-          <div class="title">XMS AI Services</div>
-          <div class="muted" style="font-size:12px">Premium AI web & automation</div>
+          <div style="font-size:13px;opacity:0.9">XMS</div>
+          <div style="font-size:11px;color:rgba(247,249,252,0.6);margin-top:2px">AI Services</div>
         </div>
       </div>
 
-      <nav class="primary" aria-label="Primary">
+      <nav aria-label="primary" role="navigation">
         <a href="#home">Home</a>
         <a href="#services">Services</a>
-        <a href="#portfolio">Demos</a>
+        <a href="#demos">Demos</a>
         <a href="#reviews">Reviews</a>
+        <a href="#pricing">Pricing</a>
         <a href="#contact">Contact</a>
       </nav>
 
-      <div>
-        <button class="nav-cta" id="nav-start" type="button" aria-label="Get your website">Get Your Website</button>
+      <div style="display:flex;gap:12px;align-items:center">
+        <button class="cta-strong" id="startProjectBtn" aria-label="Start my project">Start My Project</button>
       </div>
     </div>
   </header>
 
-  <!-- =========================
-       HERO (dark)
-       ========================= -->
-  <section id="home" class="hero section--dark" aria-labelledby="hero-title">
-    <!-- Parallax background image (dark) -->
-    <div class="hero-bg" id="hero-bg" role="img" aria-hidden="true"
-      style="background-image:url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2000&auto=format&fit=crop&s=');">
-    </div>
+  <main id="main" tabindex="-1" role="main">
+    <!-- HERO -->
+    <section id="home" class="hero" aria-label="Hero section">
+      <div class="hero-bg" aria-hidden="true"></div>
 
-    <!-- floating shapes -->
-    <div class="float-shape float-a" aria-hidden="true"></div>
-    <div class="float-shape float-b" aria-hidden="true"></div>
-
-    <div class="hero-grid">
-      <div class="hero-left">
-        <h1 id="hero-title">AI-Powered Websites That Convert — Built in 24 Hours</h1>
-        <p class="lead">Design, content, and automations — delivered fast and polished for measurable ROI. Built by AI, perfected by humans.</p>
-
-        <div style="margin-top:18px;">
-          <button class="primary-btn" id="hero-cta">Start My Project</button>
-          <a class="secondary-ghost" href="https://techilluminated01-cmyk.github.io/ryan-fitness/" target="_blank" rel="noopener noreferrer">View Live Demo</a>
-        </div>
-
-        <!-- quick feature chips -->
-        <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap">
-          <div class="card card--dark" style="padding:10px 14px;border-radius:999px;font-weight:700;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)">24–48 hour delivery</div>
-          <div class="card card--dark" style="padding:10px 14px;border-radius:999px;font-weight:700;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)">Conversion-first</div>
-          <div class="card card--dark" style="padding:10px 14px;border-radius:999px;font-weight:700;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)">No monthly fees</div>
-        </div>
+      <div class="hero-shapes" aria-hidden="true">
+        <div class="shape s1" data-shape="1"></div>
+        <div class="shape s2" data-shape="2"></div>
+        <div class="shape s3" data-shape="3"></div>
+        <div class="shape s4" data-shape="4"></div>
+        <div class="shape s5" data-shape="5"></div>
+        <div class="shape s6" data-shape="6"></div>
       </div>
 
-      <aside class="hero-card" aria-hidden="false">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-          <div>
-            <div class="muted" style="font-size:12px">Turnaround</div>
-            <div style="font-weight:900;font-size:20px">24–48 hours</div>
+      <div class="hero-panel container" role="region" aria-label="Introduction">
+        <div class="hero-copy">
+          <h1 class="brand-title">XMS AI Services</h1>
+          <p class="lead">We design, deploy, and scale cutting-edge AI that transforms product experiences — tailored models, end-to-end integrations, and enterprise-grade reliability.</p>
+
+          <div class="hero-ctas" role="group" aria-label="Hero calls to action">
+            <a class="cta-strong" href="#contact" role="button">Start My Project</a>
+            <button class="btn-ghost" id="seeDemosBtn" aria-label="View demos">View Demos</button>
           </div>
-          <div style="text-align:right">
-            <div class="muted" style="font-size:12px">Starting at</div>
-            <div style="font-weight:900">$50</div>
-          </div>
         </div>
 
-        <div style="margin-top:14px">
-          <div style="font-weight:800">Why XMS is different</div>
-          <ul class="muted" style="margin:8px 0 0 18px;padding:0">
-            <li>AI accelerates production — humans polish</li>
-            <li>Conversion-first templates + rapid QA</li>
-            <li>Simple pricing, clear deliverables</li>
-          </ul>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <!-- =========================
-       ABOUT / MISSION (light)
-       ========================= -->
-  <section id="about" class="section--light" aria-labelledby="about-heading">
-    <div class="section-inner wrap">
-      <h2 id="about-heading" style="font-family:'Poppins',sans-serif;font-weight:800;font-size:28px;margin:0 0 12px">Our Mission</h2>
-      <p class="muted" style="margin:0 0 18px;max-width:920px">
-        We combine AI speed with human craft to build websites and automation systems that help small businesses convert more leads,
-        reduce manual work, and look like industry leaders — fast.
-      </p>
-
-      <div class="grid-3" aria-hidden="false">
-        <div class="card card--light" tabindex="0">
-          <h3 style="margin:0 0 8px;font-family:'Poppins'">Speed</h3>
-          <p class="muted">Landing pages in a day, full sites in 48 hours with QA.</p>
-        </div>
-        <div class="card card--light" tabindex="0">
-          <h3 style="margin:0 0 8px;font-family:'Poppins'">Conversion</h3>
-          <p class="muted">Templates & UX optimized for lead capture and ROI.</p>
-        </div>
-        <div class="card card--light" tabindex="0">
-          <h3 style="margin:0 0 8px;font-family:'Poppins'">Automation</h3>
-          <p class="muted">Forms, WhatsApp flows, emails and Zapier integrations.</p>
+        <div class="hero-image" aria-hidden="false" role="img" aria-label="Sample AI demo visualization">
+          <div class="placeholder">Interactive demo sample</div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- =========================
-       SERVICES (dark)
-       ========================= -->
-  <section id="services" class="section--dark" aria-labelledby="services-heading">
-    <div class="section-inner wrap">
-      <h2 id="services-heading" style="font-family:'Poppins',sans-serif;font-weight:900;color:var(--text-light);margin:0 0 10px">Services</h2>
-      <p class="muted" style="color:rgba(255,255,255,0.85);margin:0 0 20px">Practical, conversion-first services for business owners who value speed and polish.</p>
+    <!-- SERVICES -->
+    <section id="services" class="services" aria-label="Our services">
+      <div class="container">
+        <h2>Services</h2>
+        <p class="small" style="margin-top:6px">End-to-end AI productization for teams and enterprises.</p>
 
-      <div class="grid-3" role="list">
-        <article class="card card--dark" role="listitem" tabindex="0" aria-label="AI Website Creation">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--neon-blue),#6A4CFF);display:grid;place-items:center;color:white;font-weight:800">AI</div>
-            <div>
-              <h3 style="margin:0 0 6px">AI Website Creation</h3>
-              <p class="muted" style="color:rgba(255,255,255,0.9)">Design-to-deploy landing pages & business sites with human QA.</p>
-            </div>
+        <div class="services-grid" id="servicesGrid" style="margin-top:20px">
+          <div class="service-card reveal" data-reveal-delay="0">
+            <div class="icon">ML</div>
+            <h3>Custom Models</h3>
+            <ul><li>Proprietary dataset training</li><li>Fine-tuning & evaluation</li><li>ModelOps pipeline</li></ul>
           </div>
-        </article>
 
-        <article class="card card--dark" role="listitem" tabindex="0" aria-label="AI Content">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,#FFD580,#FFB86B);display:grid;place-items:center;color:#111;font-weight:800">✍</div>
-            <div>
-              <h3 style="margin:0 0 6px">AI Content & Copy</h3>
-              <p class="muted" style="color:rgba(255,255,255,0.9)">SEO blogs, product descriptions, and high-converting copy.</p>
-            </div>
+          <div class="service-card reveal" data-reveal-delay="120">
+            <div class="icon">API</div>
+            <h3>API & Integration</h3>
+            <ul><li>Secure endpoints</li><li>Webhooks & orchestration</li><li>Monitoring & SLAs</li></ul>
           </div>
-        </article>
 
-        <article class="card card--dark" role="listitem" tabindex="0" aria-label="Integrations">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--neon-blue),#6A4CFF);display:grid;place-items:center;color:white;font-weight:800">⚙</div>
-            <div>
-              <h3 style="margin:0 0 6px">Automation & Integrations</h3>
-              <p class="muted" style="color:rgba(255,255,255,0.9)">Forms, WhatsApp flows, chatbots and Zapier workflows.</p>
-            </div>
+          <div class="service-card reveal" data-reveal-delay="240">
+            <div class="icon">UX</div>
+            <h3>Product Design</h3>
+            <ul><li>Conversational UX</li><li>Prompt engineering</li><li>Human-in-loop systems</li></ul>
           </div>
-        </article>
-      </div>
-    </div>
-  </section>
 
-  <!-- =========================
-       PORTFOLIO / DEMOS (light)
-       ========================= -->
-  <section id="portfolio" class="section--light" aria-labelledby="portfolio-heading">
-    <div class="section-inner wrap">
-      <h2 id="portfolio-heading" style="font-family:'Poppins',sans-serif;font-weight:800;margin:0 0 12px">Live Demos</h2>
-      <p class="muted" style="margin:0 0 16px">Click a live demo to open in a new tab.</p>
-
-      <div class="grid-3" aria-live="polite">
-        <!-- Ryan Fitness demo card (exact link) -->
-        <article class="card card--light" tabindex="0" role="article" aria-labelledby="ryan-title">
-          <div class="port-thumb" style="background:linear-gradient(135deg,#e6f3ff,#eaf0ff);display:flex;align-items:center;justify-content:center">
-            <img loading="lazy" alt="Ryan Fitness demo" src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1200&auto=format&fit=crop&s=" style="height:140px;object-fit:cover;width:100%;border-radius:8px" />
+          <div class="service-card reveal" data-reveal-delay="360">
+            <div class="icon">Ops</div>
+            <h3>Enterprise Ops</h3>
+            <ul><li>Security & compliance</li><li>Cost optimization</li><li>On-prem & hybrid</li></ul>
           </div>
-          <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <div id="ryan-title" style="font-weight:800">Ryan Fitness</div>
-              <div class="muted" style="font-size:13px">Gym site demo</div>
-            </div>
-            <div>
-              <a class="nav-cta" href="https://techilluminated01-cmyk.github.io/ryan-fitness/" target="_blank" rel="noopener noreferrer" aria-label="Open Ryan Fitness demo">View Live</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="card card--light" tabindex="0" role="article">
-          <div class="port-thumb" style="background:linear-gradient(135deg,#fff7ea,#fff2e6);height:140px;display:grid;place-items:center;border-radius:8px">
-            <strong style="color:#8a6a3f">Restaurant</strong>
-          </div>
-          <div style="margin-top:10px">
-            <div style="font-weight:800">Restaurant Demo</div>
-            <div class="muted" style="font-size:13px">Polished templates coming soon</div>
-          </div>
-        </article>
-
-        <article class="card card--light" tabindex="0" role="article">
-          <div class="port-thumb" style="background:linear-gradient(135deg,#eef2ff,#f0f7ff);height:140px;display:grid;place-items:center;border-radius:8px">
-            <strong style="color:#3b4ac1">Consultant</strong>
-          </div>
-          <div style="margin-top:10px">
-            <div style="font-weight:800">Consultant Demo</div>
-            <div class="muted" style="font-size:13px">Coming soon</div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- =========================
-       TESTIMONIALS (dark)
-       ========================= -->
-  <section id="reviews" class="section--dark" aria-labelledby="reviews-heading">
-    <div class="section-inner wrap">
-      <h2 id="reviews-heading" style="font-family:'Poppins',sans-serif;font-weight:900;color:var(--text-light);margin:0 0 12px">What clients say</h2>
-      <p class="muted" style="color:rgba(255,255,255,0.86);margin:0 0 18px">Placeholder reviews — replace with real testimonials in README.</p>
-
-      <div class="testimonials" aria-live="polite" role="region" aria-label="Testimonials carousel">
-        <!-- testimonials container (we will rotate these) -->
-        <div id="testimonials-container" style="max-width:920px;margin:0 auto;display:grid;place-items:center">
-          <article class="testimonial" id="t-0">
-            <img class="avatar" loading="lazy" alt="Avatar Sarah" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=500&auto=format&fit=crop&s=" />
-            <div>
-              <div style="font-weight:800">Sarah — USA <span class="muted" style="font-weight:600;font-size:13px">★★★★★</span></div>
-              <p class="muted" style="margin-top:8px;color:rgba(255,255,255,0.9)">“Best experience — site live in one day. Unbelievable speed and polish.”</p>
-            </div>
-          </article>
-
-          <article class="testimonial" id="t-1" aria-hidden="true">
-            <img class="avatar" loading="lazy" alt="Avatar Amit" src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=500&auto=format&fit=crop&s=" />
-            <div>
-              <div style="font-weight:800">Amit — India <span class="muted" style="font-weight:600;font-size:13px">★★★★★</span></div>
-              <p class="muted" style="margin-top:8px;color:rgba(255,255,255,0.9)">“Saved a week of work — polished & conversion-focused. Highly recommend.”</p>
-            </div>
-          </article>
-
-          <article class="testimonial" id="t-2" aria-hidden="true">
-            <img class="avatar" loading="lazy" alt="Avatar Lucas" src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=500&auto=format&fit=crop&s=" />
-            <div>
-              <div style="font-weight:800">Lucas — UK <span class="muted" style="font-weight:600;font-size:13px">★★★★★</span></div>
-              <p class="muted" style="margin-top:8px;color:rgba(255,255,255,0.9)">“Looks straight out of Silicon Valley. Very premium feel.”</p>
-            </div>
-          </article>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- =========================
-       PRICING (light)
-       ========================= -->
-  <section id="pricing" class="section--light" aria-labelledby="pricing-heading">
-    <div class="section-inner wrap">
-      <h2 id="pricing-heading" style="font-family:'Poppins',sans-serif;font-weight:800;margin:0 0 12px">Starter pricing</h2>
-      <div class="price-row" role="list">
-        <div class="price" role="listitem">
-          <div style="font-weight:800">Starter</div>
-          <div style="font-size:20px;font-weight:900;margin-top:6px">$50</div>
-          <div class="muted" style="margin-top:8px">One-page landing (fast)</div>
-        </div>
-        <div class="price" role="listitem">
-          <div style="font-weight:800">Growth</div>
-          <div style="font-size:20px;font-weight:900;margin-top:6px">$150</div>
-          <div class="muted" style="margin-top:8px">3–5 page business site</div>
-        </div>
-        <div class="price" role="listitem">
-          <div style="font-weight:800">Premium</div>
-          <div style="font-size:20px;font-weight:900;margin-top:6px">$350+</div>
-          <div class="muted" style="margin-top:8px">Full site + automations</div>
+    <!-- DEMOS -->
+    <section id="demos" class="demos" aria-label="Demos">
+      <div class="container">
+        <h2>Demos</h2>
+        <p class="small">Interactive samples and concept prototypes.</p>
+
+        <div class="demos-grid" style="margin-top:18px">
+          <div class="demo-tile" tabindex="0" role="article" aria-label="Demo sample 1">
+            <div class="demo-media">
+              <div style="font-weight:700">Demo Sample 1</div>
+            </div>
+            <div class="shine" aria-hidden="true"></div>
+            <div class="demo-overlay">
+              <div>
+                <div style="font-weight:700">Conversational Agent</div>
+                <div style="margin-top:6px">Adaptive responses, memory, safety layers.</div>
+                <div style="margin-top:8px"><a class="cta-strong" href="#" role="button">View Demo (sample)</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-tile" tabindex="0" role="article" aria-label="Demo sample 2">
+            <div class="demo-media">
+              <div style="font-weight:700">Demo Sample 2</div>
+            </div>
+            <div class="shine" aria-hidden="true"></div>
+            <div class="demo-overlay">
+              <div>
+                <div style="font-weight:700">Vision Pipeline</div>
+                <div style="margin-top:6px">Multi-modal understanding & insights.</div>
+                <div style="margin-top:8px"><a class="cta-strong" href="#" role="button">View Demo (sample)</a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-tile" tabindex="0" role="article" aria-label="Demo sample 3">
+            <div class="demo-media">
+              <div style="font-weight:700">Demo Sample 3</div>
+            </div>
+            <div class="shine" aria-hidden="true"></div>
+            <div class="demo-overlay">
+              <div>
+                <div style="font-weight:700">Recommendation Engine</div>
+                <div style="margin-top:6px">Personalized ranking at scale.</div>
+                <div style="margin-top:8px"><a class="cta-strong" href="#" role="button">View Demo (sample)</a></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="muted" style="margin-top:10px">Prices shown for quick reference. Final quote may vary.</div>
-    </div>
-  </section>
+    </section>
 
-  <!-- =========================
-       CONTACT / LEAD FORM (critical)
-       ========================= -->
-  <section id="contact" class="section--dark" aria-labelledby="contact-heading">
-    <div class="section-inner wrap">
-      <h2 id="contact-heading" style="font-family:'Poppins',sans-serif;font-weight:900;color:var(--text-light);margin:0 0 10px">Start Your Project — Leave your name & email</h2>
-      <p class="muted" style="color:rgba(255,255,255,0.86);margin:0 0 18px">We’ll email a preview within 12 hours. Only Name & Email required.</p>
+    <!-- WHY / STATS -->
+    <section class="stats" aria-label="Why XMS">
+      <div class="container grid" style="align-items:center">
+        <div style="grid-column: span 6;">
+          <h2>Why XMS</h2>
+          <p class="small">We combine research-grade models with product-first engineering and enterprise reliability.</p>
+        </div>
 
-      <!-- The form posts to Formspree endpoint (exact URL provided) -->
-      <div class="contact-panel" role="region" aria-label="Contact form">
-        <form id="leadForm" name="leadForm" method="POST" novalidate>
-          <div class="form-row" role="group" aria-label="Lead fields">
+        <div style="grid-column: span 6;">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end">
+            <div class="stat reveal" data-count="120" data-reveal-delay="0">
+              <div class="num" aria-hidden="true">0</div>
+              <p>Products shipped</p>
+            </div>
+
+            <div class="stat reveal" data-count="50" data-reveal-delay="120">
+              <div class="num" aria-hidden="true">0</div>
+              <p>Enterprise clients</p>
+            </div>
+
+            <div class="stat reveal" data-count="99" data-reveal-delay="240">
+              <div class="num" aria-hidden="true">0</div>
+              <p>Uptime & reliability</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="reviews" class="testimonials" aria-label="Client testimonials">
+      <div class="container">
+        <h2>Client reviews</h2>
+
+        <div class="viewport" aria-live="polite" aria-atomic="true" role="region" aria-label="Testimonials carousel" style="margin-top:18px">
+          <div class="track" id="testTrack">
+            <!-- testimonial items -->
+            <div class="testimonial" role="article" aria-roledescription="testimonial" tabindex="0">
+              <div class="avatar">AL</div>
+              <div class="quote">
+                <div style="font-weight:700">Amazing delivery</div>
+                <div style="margin-top:6px" class="small">"XMS shipped a production-grade model in 8 weeks — performance and reliability exceeded expectations."</div>
+              </div>
+            </div>
+
+            <div class="testimonial" role="article" aria-roledescription="testimonial" tabindex="0">
+              <div class="avatar">RG</div>
+              <div class="quote">
+                <div style="font-weight:700">Reliable partner</div>
+                <div style="margin-top:6px" class="small">"Their team integrated our systems with thoughtful MLops — observability is top-notch."</div>
+              </div>
+            </div>
+
+            <div class="testimonial" role="article" aria-roledescription="testimonial" tabindex="0">
+              <div class="avatar">SM</div>
+              <div class="quote">
+                <div style="font-weight:700">Product-first</div>
+                <div style="margin-top:6px" class="small">"Design sensibilities and prompt engineering made our AI product delightful to use."</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="test-controls" role="toolbar" aria-label="testimonial controls">
+          <button id="prevTest" aria-label="Previous testimonial">&larr;</button>
+          <button id="pauseTest" aria-label="Pause testimonials">Pause</button>
+          <button id="nextTest" aria-label="Next testimonial">&rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="pricing" aria-label="Pricing">
+      <div class="container">
+        <h2>Pricing (Snippet)</h2>
+        <p class="small">Choose a starting tier — all options scale with custom engagement.</p>
+
+        <div class="pricing-grid" style="margin-top:18px">
+          <div class="price-card">
+            <h3>Starter</h3>
+            <p class="small">Proof-of-concept & early productization</p>
+            <div style="margin-top:10px"><a class="btn-ghost" href="#contact" role="button">Get started</a></div>
+          </div>
+
+          <div class="price-card">
+            <h3>Growth</h3>
+            <p class="small">Deployment, integrations, and automation</p>
+            <div style="margin-top:10px"><a class="cta-strong" href="#contact" role="button">Talk to sales</a></div>
+          </div>
+
+          <div class="price-card">
+            <h3>Premium</h3>
+            <p class="small">Dedicated SRE, custom models, on-prem options</p>
+            <div style="margin-top:10px"><a class="btn-ghost" href="#contact" role="button">Request quote</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact" aria-label="Contact">
+      <div class="container">
+        <h2>Contact</h2>
+        <p class="small">Tell us about your project and we'll follow up within 12 hours.</p>
+
+        <div class="contact-wrap" style="margin-top:18px">
+          <form id="contactForm" action="https://formspree.io/f/xkgprdpn" method="POST" novalidate aria-label="Contact form">
+            <!-- required fields: name and _replyto -->
             <div class="field">
-              <label class="label" for="fullName">Full Name</label>
-              <input id="fullName" name="name" class="input" type="text" autocomplete="name" required aria-required="true" />
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" required aria-required="true" autocomplete="name" placeholder="Your full name" />
             </div>
+
             <div class="field">
-              <label class="label" for="emailAddr">Email</label>
-              <!-- Formspree uses _replyto convention -->
-              <input id="emailAddr" name="_replyto" class="input" type="email" autocomplete="email" required aria-required="true" />
+              <label for="email">Email</label>
+              <input id="_replyto" name="_replyto" type="email" required aria-required="true" autocomplete="email" placeholder="you@company.com" />
             </div>
-          </div>
 
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px">
-            <button id="submitBtn" class="submit" type="submit" aria-live="polite">Send My Request</button>
-            <div class="note muted">You’ll receive an email with a preview within 12 hours.</div>
-          </div>
-        </form>
+            <div class="field">
+              <label for="message">Project summary (optional)</label>
+              <input id="message" name="message" type="text" placeholder="A few details about your goals" />
+            </div>
+
+            <div class="inline-row">
+              <label class="small"><input id="whatsapp" name="whatsapp" type="checkbox" /> WhatsApp follow-up</label>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:center;margin-top:6px">
+              <button type="submit" class="cta-strong" id="submitBtn">Send request</button>
+              <button type="button" class="btn-ghost" id="formReset">Reset</button>
+              <div aria-live="polite" id="formStatus" class="sr-only"></div>
+            </div>
+
+            <div class="micro">What happens next: We review your request and email a preview within 12 hours.</div>
+          </form>
+
+          <aside aria-label="Contact sidebar" style="padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);border:1px solid rgba(255,255,255,0.03);">
+            <h3 style="margin-top:0">Need a quick reply?</h3>
+            <p class="small">Tell us your timeline and priorities and we'll prioritize outreach.</p>
+            <div style="margin-top:12px"><a class="cta-strong" href="#contact" role="button">Request priority</a></div>
+          </aside>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <div class="muted" style="margin-top:12px;color:rgba(255,255,255,0.76)">Form posts to Formspree: <span style="font-family:monospace">https://formspree.io/f/xkgprdpn</span></div>
-    </div>
-  </section>
+  <!-- Toast & Modal for form feedback -->
+  <div id="toast" class="toast" role="status" aria-live="assertive" aria-atomic="true" style="background:#7a1a1a"></div>
 
-  <!-- =========================
-       FOOTER (light)
-       ========================= -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div>
-        <div style="font-weight:800">XMS AI Services</div>
-        <div class="muted">© <span id="year"></span> XMS AI Services — All rights reserved.</div>
-      </div>
-
-      <div style="display:flex;gap:12px;align-items:center">
-        <a href="/privacy.html" class="muted">Privacy</a>
-        <a href="/terms.html" class="muted">Terms</a>
-        <a class="muted" href="https://techilluminated01-cmyk.github.io/ryan-fitness/" target="_blank" rel="noopener noreferrer">Ryan Demo</a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- =========================
-       Success modal & Toasts (DOM nodes)
-       ========================= -->
-  <div id="modalSuccess" class="modal-success" role="status" aria-live="polite" aria-hidden="true">
-    <div style="display:flex;align-items:center">
+  <div id="successModal" class="modal-inline" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-hidden="true">
+    <div class="modal-content">
       <div class="checkmark" aria-hidden="true">
-        <!-- Animated checkmark SVG -->
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path id="checkPath" d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="48" stroke-dashoffset="48"/>
+        <!-- Animated checkmark SVG stroke draw -->
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="11" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"></circle>
+          <path id="checkPath" d="M6.5 12.5 L10 16 L17.5 8" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-dasharray="40" stroke-dashoffset="40"></path>
         </svg>
       </div>
+
       <div>
-        <div style="font-weight:800">Thank you! We’ll reach out within 12 hours.</div>
-        <div class="muted" style="margin-top:6px">No redirect — this page stays live. Check your inbox.</div>
+        <h3 id="successTitle" style="margin:0 0 6px 0">Thanks — we’ll email a preview within 12 hours.</h3>
+        <p class="small" style="margin:0">We’ve received your request. Expect an email with a short preview and next steps.</p>
       </div>
     </div>
   </div>
 
-  <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">Submission failed. Please try again.</div>
+  <!-- Footer -->
+  <footer role="contentinfo" aria-label="Footer">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>© <span id="year"></span> XMS AI Services</div>
+      <div style="display:flex;gap:12px">
+        <a href="#" aria-label="Privacy">Privacy</a>
+        <a href="#" aria-label="Terms">Terms</a>
+      </div>
+    </div>
+  </footer>
 
-  <!-- =========================
-       Scripts (modular, commented)
-       ========================= -->
   <script>
-    /* =========================================================================
-       XMS AI Services - Frontend Scripts
-       - Smooth scrolling
-       - Parallax hero background + floating shapes
-       - Scroll reveal (fade-up) using IntersectionObserver
-       - Testimonials auto-rotate (5s) with fade transitions
-       - Accessible form submit to Formspree via fetch (async)
-       - Success modal with animated checkmark (SVG stroke animation)
-       - Error toast handling
-       - Reduced-motion respect
-       ========================================================================= */
+    /*
+      Main JS for interactions, accessibility, and animations.
 
-    (function () {
+      Top-editable constants:
+        - FORM_ENDPOINT: change if using a different Formspree form.
+        - FEATURES: toggle cursor trail, localStorage fallback behaviour, etc.
+      Behavior highlights:
+        - Intercepts form submit, posts to Formspree using fetch.
+        - Displays inline modal with animated checkmark on success.
+        - On network error, shows an accessible toast and stores local fallback.
+        - Testimonials carousel: auto-rotates every 5s, keyboard accessible, pause on hover.
+        - Reveal animations: elements with .reveal will fade-up on intersection with stagger.
+        - Counters animate when visible.
+    */
+
+    (function(){
       'use strict';
 
-      /* -----------------------------
-         Config & constants
-         ----------------------------- */
-      const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xkgprdpn'; // EXACT endpoint required
-      const testimonialsRotateMs = 5000;
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      /* === Configuration === */
+      const FORM_ENDPOINT = 'https://formspree.io/f/xkgprdpn'; // change here if needed
+      const TESTIMONIAL_INTERVAL = 5000; // 5000ms auto-rotate
+      const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      /* -----------------------------
-         DOM references
-         ----------------------------- */
-      const heroCta = document.getElementById('hero-cta');
-      const navStart = document.getElementById('nav-start');
-      const contactSection = document.getElementById('contact');
-      const heroBg = document.getElementById('hero-bg');
-      const floatA = document.querySelector('.float-a');
-      const floatB = document.querySelector('.float-b');
-      const leadForm = document.getElementById('leadForm');
-      const submitBtn = document.getElementById('submitBtn');
-      const modalSuccess = document.getElementById('modalSuccess');
-      const checkPath = document.getElementById('checkPath');
-      const errorToast = document.getElementById('errorToast');
-      const yearSpan = document.getElementById('year');
+      const FEATURES = {
+        cursorTrail: true,
+        localFallback: true, // store failed submissions in localStorage for retry
+      };
 
-      if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+      /* === Utility helpers === */
+      const q = (sel, root=document) => root.querySelector(sel);
+      const qAll = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+      const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
+      const nowYear = () => new Date().getFullYear();
 
-      /* -----------------------------
-         Smooth scroll helper
-         ----------------------------- */
-      function smoothScrollTo(targetEl) {
-        if (!targetEl) return;
-        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      /* Set current year in footer */
+      q('#year').textContent = nowYear();
+
+      /* Header shrink on scroll > 24px */
+      const header = q('#siteHeader');
+      const onScroll = () => {
+        if(window.scrollY > 24) header.classList.add('shrink');
+        else header.classList.remove('shrink');
+      };
+      on(window, 'scroll', onScroll);
+      onScroll();
+
+      /* =============================
+         Hero shape pointer parallax
+         ============================= */
+      const shapes = qAll('.shape');
+      if(!REDUCED_MOTION){
+        on(window, 'pointermove', (e) => {
+          const cx = window.innerWidth / 2;
+          const cy = window.innerHeight / 2;
+          const dx = (e.clientX - cx) / cx;
+          const dy = (e.clientY - cy) / cy;
+          shapes.forEach((s, i) => {
+            // Parallax: small translate based on pointer position
+            const depth = (i + 1) * 6;
+            const tx = dx * depth;
+            const ty = dy * depth;
+            s.style.transform = s.style.transform.replace(/translate3d\([^)]+\)/, '') || s.style.transform;
+            // Use CSS transform with translate + rotate preserved via inline transform approach
+            s.style.transform += ` translate3d(${tx}px, ${ty}px, 0)`;
+            s.dataset.pointer = true;
+            // remove pointer flag after short timeout
+            clearTimeout(s._ptrTimeout);
+            s._ptrTimeout = setTimeout(()=>{ s.dataset.pointer = false; }, 200);
+          });
+        });
       }
 
-      // Hook hero CTA and nav CTA to scroll to contact form
-      [heroCta, navStart].forEach(btn => {
-        if (!btn) return;
-        btn.addEventListener('click', function (e) {
-          e.preventDefault();
-          smoothScrollTo(contactSection);
-          // focus on first input after scroll completes
-          setTimeout(() => {
-            const first = contactSection.querySelector('input');
-            if (first) first.focus({ preventScroll: true });
-          }, 650);
+      /* =============================
+         Reveal animations via IntersectionObserver
+         ============================= */
+      const reveals = qAll('.reveal');
+      if('IntersectionObserver' in window){
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if(entry.isIntersecting){
+              const el = entry.target;
+              const delay = parseInt(el.dataset.revealDelay || el.getAttribute('data-reveal-delay') || 0, 10);
+              setTimeout(()=> el.classList.add('show'), delay);
+              io.unobserve(el);
+            }
+          });
+        }, {threshold:0.12});
+        reveals.forEach(r => io.observe(r));
+      } else {
+        // fallback: show all
+        reveals.forEach(r=> r.classList.add('show'));
+      }
+
+      /* =============================
+         Counters animation when visible
+         ============================= */
+      const counters = qAll('.stat');
+      function animateCounter(el, target){
+        const numEl = el.querySelector('.num');
+        let start = 0;
+        const duration = 1200;
+        const startTime = performance.now();
+        function step(ts){
+          const t = Math.min(1, (ts - startTime) / duration);
+          const val = Math.floor(t * target);
+          numEl.textContent = val;
+          if(t < 1) requestAnimationFrame(step);
+          else numEl.textContent = target + (target>1 && target<100 ? '+' : '');
+        }
+        requestAnimationFrame(step);
+      }
+      if('IntersectionObserver' in window){
+        const ioCounts = new IntersectionObserver((entries) => {
+          entries.forEach(entry=>{
+            if(entry.isIntersecting){
+              const el = entry.target;
+              const target = parseInt(el.dataset.count || el.getAttribute('data-count') || 0, 10);
+              animateCounter(el, target);
+              ioCounts.unobserve(el);
+            }
+          });
+        }, {threshold:0.4});
+        counters.forEach(c=> ioCounts.observe(c));
+      } else {
+        counters.forEach(c=>{
+          const t = parseInt(c.dataset.count||0,10);
+          animateCounter(c,t);
         });
+      }
+
+      /* =============================
+         Testimonials carousel
+         ============================= */
+      const track = q('#testTrack');
+      const testimonials = qAll('.testimonial', track);
+      let testIndex = 0;
+      let testTimer = null;
+      const prevBtn = q('#prevTest'), nextBtn = q('#nextTest'), pauseBtn = q('#pauseTest');
+
+      function showTest(i, instant=false){
+        i = (i + testimonials.length) % testimonials.length;
+        const offset = -i * 100;
+        track.style.transform = `translateX(${offset}%)`;
+        testimonials.forEach((t, idx)=> t.setAttribute('aria-hidden', idx!==i));
+        testIndex = i;
+      }
+
+      function startTestRotation(){
+        if(REDUCED_MOTION) return;
+        testTimer = setInterval(()=> showTest(testIndex+1), TESTIMONIAL_INTERVAL);
+        pauseBtn.textContent = 'Pause';
+      }
+
+      function stopTestRotation(){
+        clearInterval(testTimer); testTimer = null; pauseBtn.textContent = 'Play';
+      }
+
+      on(prevBtn, 'click', ()=>{ showTest(testIndex-1); });
+      on(nextBtn, 'click', ()=>{ showTest(testIndex+1); });
+      on(pauseBtn, 'click', ()=>{
+        if(testTimer) stopTestRotation(); else startTestRotation();
       });
 
-      /* -----------------------------
-         Parallax (simple, performant)
-         - transforms on GPU (translateY)
-         - limited by prefers-reduced-motion
-         ----------------------------- */
-      if (!prefersReducedMotion) {
-        window.addEventListener('scroll', function () {
-          const sc = window.scrollY;
-          // background moves slower (parallax)
-          if (heroBg) heroBg.style.transform = `translateY(${sc * 0.06}px) scale(1.03)`;
-          if (floatA) floatA.style.transform = `translateY(${sc * 0.03}px)`;
-          if (floatB) floatB.style.transform = `translateY(${sc * 0.05}px)`;
-        }, { passive: true });
+      // pause on hover
+      on(track, 'mouseenter', ()=>{ if(testTimer) stopTestRotation(); });
+      on(track, 'mouseleave', ()=>{ if(!testTimer) startTestRotation(); });
+
+      // keyboard navigation
+      on(document, 'keydown', (e) => {
+        if(document.activeElement && document.activeElement.tagName === 'INPUT') return;
+        if(e.key === 'ArrowLeft') showTest(testIndex-1);
+        if(e.key === 'ArrowRight') showTest(testIndex+1);
+      });
+
+      // init
+      showTest(0);
+      startTestRotation();
+
+      /* =============================
+         Form handling (Formspree)
+         ============================= */
+      const form = q('#contactForm');
+      const submitBtn = q('#submitBtn');
+      const formStatus = q('#formStatus');
+      const toast = q('#toast');
+      const successModal = q('#successModal');
+      const checkPath = q('#checkPath');
+
+      // helper to show accessible toast
+      function showToast(message, opts={ type: 'error', duration:4000 }){
+        toast.textContent = message;
+        toast.style.background = opts.type === 'error' ? '#7a1a1a' : '#1a4a1a';
+        toast.classList.add('show');
+        setTimeout(()=> toast.classList.remove('show'), opts.duration || 4000);
       }
 
-      /* -----------------------------
-         Scroll reveal - fade-up
-         - Uses IntersectionObserver; toggles .in-view on elements with .reveal
-         ----------------------------- */
-      (function initScrollReveal() {
-        const revealElementsSelector = [
-          '.card',
-          '.hero-left h1',
-          '.lead',
-          '.hero-card',
-          '.testimonial',
-          '.price',
-          '.contact-panel',
-          '#portfolio .port-thumb'
-        ].join(',');
+      // animate checkmark stroke-draw
+      function animateCheckmark(){
+        checkPath.style.transition = 'stroke-dashoffset 420ms var(--global-ease)';
+        checkPath.style.strokeDashoffset = '0';
+      }
 
-        const elements = document.querySelectorAll(revealElementsSelector);
-        if (!('IntersectionObserver' in window) || prefersReducedMotion) {
-          // If no IntersectionObserver or reduced motion, simply mark as in-view
-          elements.forEach(el => el.classList.add('in-view'));
+      // store fallback in localStorage
+      function storeFallback(formData){
+        if(!FEATURES.localFallback) return;
+        const queue = JSON.parse(localStorage.getItem('xms_form_queue') || '[]');
+        queue.push({ ts: Date.now(), data: Object.fromEntries(formData.entries()) });
+        localStorage.setItem('xms_form_queue', JSON.stringify(queue));
+      }
+
+      async function attemptSend(formData){
+        // try to POST normally
+        try {
+          // try modern fetch: post as form data
+          const r = await fetch(FORM_ENDPOINT, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json'
+            },
+            body: formData
+          });
+          // Formspree returns 200 JSON if accepted in CORS environment.
+          // However if using no-cors fallback, response may be opaque.
+          if(r && (r.ok || r.type === 'opaque')) return { ok: true };
+          // otherwise try fallback
+          return { ok:false, status: r.status };
+        } catch(err){
+          // fallback: attempt no-cors fetch to the endpoint to at least fire the submission (best effort)
+          try {
+            await fetch(FORM_ENDPOINT, { method:'POST', mode:'no-cors', body: formData });
+            // cannot inspect response; assume success
+            return { ok:true };
+          } catch(err2){
+            return { ok:false, error: err2 };
+          }
+        }
+      }
+
+      // Form validation simple
+      function validateForm(formData){
+        const name = formData.get('name') || '';
+        const email = formData.get('_replyto') || '';
+        if(!name.trim()) return 'Please enter your name.';
+        if(!email.trim()) return 'Please enter your email.';
+        // simple email regex (non-exhaustive)
+        const re = /\S+@\S+\.\S+/;
+        if(!re.test(email)) return 'Please enter a valid email address.';
+        return null;
+      }
+
+      on(form, 'submit', async (evt) => {
+        evt.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+
+        const formData = new FormData(form);
+        const validationError = validateForm(formData);
+        if(validationError){
+          formStatus.textContent = validationError;
+          showToast(validationError, { type: 'error', duration: 4000 });
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-busy');
           return;
         }
 
-        const obs = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('in-view');
-              // if you want to animate only once, unobserve
-              obs.unobserve(entry.target);
-            }
-          });
-        }, {
-          root: null,
-          rootMargin: '0px 0px -10% 0px',
-          threshold: 0.12
-        });
+        // attempt send
+        const result = await attemptSend(formData);
+        if(result.ok){
+          // success UI: modal with animated check
+          successModal.classList.add('show');
+          successModal.setAttribute('aria-hidden', 'false');
+          // mark accessible live region
+          formStatus.textContent = "Thanks — we'll email a preview within 12 hours.";
+          setTimeout(()=> animateCheckmark(), 80);
 
-        elements.forEach(el => obs.observe(el));
-      })();
-
-      /* -----------------------------
-         Testimonials auto-rotate
-         - Fade animation, keyboard accessible
-         ----------------------------- */
-      (function initTestimonials() {
-        const container = document.getElementById('testimonials-container');
-        if (!container) return;
-        const items = Array.from(container.querySelectorAll('.testimonial'));
-        if (!items.length) return;
-
-        let current = 0;
-        const total = items.length;
-
-        function showIndex(idx) {
-          items.forEach((it, i) => {
-            if (i === idx) {
-              it.classList.add('in-view');
-              it.removeAttribute('aria-hidden');
-            } else {
-              it.classList.remove('in-view');
-              it.setAttribute('aria-hidden', 'true');
-            }
-          });
+          // clear form
+          form.reset();
+          // auto-close modal after some time
+          setTimeout(()=> {
+            successModal.classList.remove('show');
+            successModal.setAttribute('aria-hidden','true');
+            // reset check path for future animation
+            checkPath.style.transition = 'none';
+            checkPath.style.strokeDashoffset = checkPath.getTotalLength ? checkPath.getTotalLength() : '40';
+          }, 6000);
+        } else {
+          // error UI: toast + local fallback
+          const msg = result.error ? 'Network error — saved locally for retry.' : 'Submission failed — saved locally.';
+          showToast(msg, { type:'error', duration: 6000 });
+          formStatus.textContent = msg;
+          // store fallback local copy
+          try{ storeFallback(formData); }catch(e){ console.warn('fallback store failed', e); }
         }
 
-        // Initial show
-        showIndex(current);
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute('aria-busy');
+      });
 
-        if (!prefersReducedMotion) {
-          setInterval(() => {
-            current = (current + 1) % total;
-            showIndex(current);
-          }, testimonialsRotateMs);
-        }
-      })();
+      // Reset button handler
+      on(q('#formReset'), 'click', ()=> form.reset());
 
-      /* -----------------------------
-         Form submission
-         - POSTs to Formspree endpoint using fetch()
-         - Shows success modal (animated check) on success
-         - Shows toast on failure
-         - Does NOT redirect or reload page
-         - Retries are not implemented here; could be added as optional queue
-         ----------------------------- */
-      (function initForm() {
-        if (!leadForm) return;
-
-        // Helper to show toast
-        function showErrorToast(message = 'Submission failed. Please try again.') {
-          errorToast.textContent = message;
-          errorToast.classList.add('show');
-          setTimeout(() => errorToast.classList.remove('show'), 4200);
-        }
-
-        // Animate SVG checkmark stroke
-        function animateCheckmark() {
-          if (!checkPath) return;
-          // reset stroke
-          checkPath.style.transition = 'none';
-          checkPath.style.strokeDashoffset = checkPath.getTotalLength();
-          // allow next frame to animate
-          requestAnimationFrame(() => {
-            checkPath.style.transition = 'stroke-dashoffset 520ms cubic-bezier(.22,.9,.32,1)';
-            checkPath.style.strokeDashoffset = '0';
-          });
-        }
-
-        leadForm.addEventListener('submit', async function (e) {
-          e.preventDefault();
-          const submitText = submitBtn.textContent;
-          submitBtn.disabled = true;
-          submitBtn.textContent = 'Sending...';
-
-          // Build form data
-          const formData = new FormData(leadForm);
-          // minimal fields: name, _replyto (Formspree expects _replyto for reply email)
-          // Convert to URLSearchParams for traditional form POST
-          const payload = new URLSearchParams();
-          for (const [k, v] of formData.entries()) payload.append(k, v);
-
-          try {
-            const response = await fetch(FORMSPREE_ENDPOINT, {
-              method: 'POST',
-              headers: { 'Accept': 'application/json' },
-              body: payload
-            });
-
-            if (response.ok) {
-              // Success UI: show animated modal
-              modalSuccess.classList.add('show');
-              modalSuccess.setAttribute('aria-hidden', 'false');
-              animateCheckmark();
-
-              // auto-hide after a short duration
-              setTimeout(() => {
-                modalSuccess.classList.remove('show');
-                modalSuccess.setAttribute('aria-hidden', 'true');
-              }, 3600);
-
-              // Reset form
-              leadForm.reset();
-            } else {
-              // response with error JSON
-              showErrorToast('Server rejected submission. Please try again later.');
-            }
-          } catch (err) {
-            console.error('Form submit error', err);
-            showErrorToast('Network error. Please try again.');
-          } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = submitText;
+      /* Attempt to resend any local fallbacks on load (best-effort) */
+      if(FEATURES.localFallback && navigator.onLine){
+        try{
+          const queue = JSON.parse(localStorage.getItem('xms_form_queue') || '[]');
+          if(Array.isArray(queue) && queue.length){
+            // process queue sequentially (best-effort)
+            (async function processQueue(){
+              for(const item of queue){
+                const fd = new FormData();
+                Object.entries(item.data).forEach(([k,v])=> fd.append(k, v));
+                try{
+                  await fetch(FORM_ENDPOINT, { method:'POST', body:fd });
+                } catch(e){
+                  // leave in queue if a retry fails
+                  console.warn('retry failed', e);
+                  return;
+                }
+              }
+              // all good: clear queue
+              localStorage.removeItem('xms_form_queue');
+            })();
           }
+        } catch(e){
+          console.warn('queue processing failed', e);
+        }
+      }
+
+      /* =============================
+         Cursor trail (non-essential)
+         ============================= */
+      if(FEATURES.cursorTrail && !REDUCED_MOTION && window.innerWidth > 800){
+        let trail;
+        try{
+          trail = document.createElement('div');
+          trail.style.position='fixed';
+          trail.style.width='10px';
+          trail.style.height='10px';
+          trail.style.borderRadius='50%';
+          trail.style.background='linear-gradient(90deg,var(--neon-blue),var(--electric-violet))';
+          trail.style.zIndex='9999';
+          trail.style.pointerEvents='none';
+          trail.style.transform='translate(-50%,-50%)';
+          trail.style.mixBlendMode='screen';
+          trail.style.opacity='0.9';
+          document.body.appendChild(trail);
+          on(window,'pointermove', (e)=> {
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+          });
+        }catch(e){ console.warn('cursor trail disabled', e); }
+      }
+
+      /* =============================
+         Micro-interactions: button hover scale & glow
+         ============================= */
+      qAll('.cta-strong, .btn-ghost, .service-card, .demo-tile').forEach(el=>{
+        el.addEventListener('pointerenter', ()=> el.classList.add('hovering'));
+        el.addEventListener('pointerleave', ()=> el.classList.remove('hovering'));
+      });
+
+      /* =============================
+         Lightweight accessibility: focus outlines for keyboard users
+         ============================= */
+      (function keyboardOutline(){
+        let usingKeyboard = false;
+        window.addEventListener('keydown', (e)=>{
+          if(e.key === 'Tab') {
+            usingKeyboard = true;
+            document.documentElement.classList.add('using-keyboard');
+          }
+        });
+        window.addEventListener('mousedown', ()=> {
+          usingKeyboard = false;
+          document.documentElement.classList.remove('using-keyboard');
         });
       })();
 
-      /* -----------------------------
-         Accessibility helpers & keyboard focus outline
-         ----------------------------- */
-      (function keyboardOutline() {
-        function handleFirstTab(e) {
-          if (e.key === 'Tab') {
-            document.body.classList.add('user-tabbing');
-            window.removeEventListener('keydown', handleFirstTab);
-          }
-        }
-        window.addEventListener('keydown', handleFirstTab);
-      })();
-
-      /* -----------------------------
-         Small performance & UX helpers
-         - lazy-loading images handled by loading="lazy" attribute in markup
-         - ensure focusable elements have focus style via CSS (Poppins focus)
-         ----------------------------- */
-
+      /* End of IIFE */
     })();
   </script>
+
+  <!-- EOF: README -->
+  <!--
+    README (end-of-file instructions):
+
+    Where to change Formspree endpoint:
+      - Update the FORM_ENDPOINT constant in the main <script> block.
+      - Also update the <form action="..."> attribute if you prefer server-side inspection.
+
+    How to update testimonials:
+      - Edit the markup inside the Testimonials section (id="reviews").
+      - Each .testimonial is one slide. Update avatar initials, heading and quote text.
+      - If you need more slides, add .testimonial elements within #testTrack.
+
+    How to swap colors / palette:
+      - Edit CSS variables under :root at the top of the <style> block.
+      - Key variables: --dark-bg, --neon-blue, --electric-violet, --cyan-shimmer, --linen, --warm-gold.
+      - For global gradient timings, change --hero-loop and --shape-loop-long.
+
+    Deployment:
+      - This single-file site can be dropped into a repo as index.html and deployed to GitHub Pages, Netlify, or Vercel.
+      - For GitHub Pages: push to repository and enable Pages in settings with branch main (or docs folder).
+      - For Netlify: drag & drop this file into the Netlify deploy UI or connect the repo and set build to publish root.
+      - Ensure HTTPS for Formspree to work correctly.
+
+    Notes & considerations:
+      - All animations respect prefers-reduced-motion; users who request reduced motion will see static, accessible content.
+      - Form submissions attempt standard fetch POST; if that fails we fallback to no-cors fetch or store to localStorage for retry.
+      - No external client links are used; replace '#' anchors with internal pages if desired.
+
+    If this file is truncated due to output limits, type "continue" and the assistant will resume exactly where it left off.
+  -->
 </body>
 </html>
